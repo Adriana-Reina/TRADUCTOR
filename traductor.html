@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRADUCTOR</title>
+
+    <script type="text/javascript">
+        var val1,count=0;
+        var conexion;
+        agregarEvento(window,'load',cargar,false);
+        function agregarEvento(ele,eve,fun,cap){
+            if(window.attachEvent){	 
+            addAttachEvent('on'+eve,fun);			 
+	       } 
+	       else{
+
+	          ele.addEventListener(eve,fun,cap); 
+                                          	 
+	       }
+        }
+           function cargar(){  
+            agregarEvento(document.getElementById("txt_palabra1"),'keypress',filtraNumeros,false);        
+            agregarEvento(document.getElementById("btn_tra"),'click',leerValores,false);
+          
+      }
+      
+      function leerValores(){                    
+          val1=document.getElementById("txt_palabra1").value;
+          if(validaDatosCompletos()==true){
+            
+            enviarValoresServidor();
+          }
+            
+          else
+            alert("Verifique falta algún dato");
+
+         
+       }              	  
+       function enviarValoresServidor(){ 
+          
+        
+           conexion = xmlhttprequest();
+	        conexion.onreadystatechange = esperaResultado;
+	         conexion.open("POST","traductor.php",true);
+	         conexion.setRequestHeader("Content-type","application/x-www-form-urlencoded");  
+           
+	         conexion.send("variable_php="+val1);
+       }
+       function esperaResultado(){ 
+              if(conexion.readyState == 4){
+                 var dato = conexion.responseText;
+                 document.getElementById("txt_res").value=dato;
+
+              }  
+
+       } 
+       function xmlhttprequest(){
+           return new XMLHttpRequest();
+       }
+       function validaDatosCompletos(){
+               if(!val1){ 
+                  return false;
+               }
+               else{
+                  return true;
+               }
+       }
+       function filtraNumeros(){
+                if(  (event.keyCode>=97 && event.keyCode<=122)){
+                     event.returnValue=true;
+               } 
+               else{
+                    event.returnValue=false;
+               }
+              }
+
+    </script>
+</head>
+<body>
+    <center><form>
+        TRADUCTOR<br><br>
+        <input type="text" id="txt_palabra1" placeholder="Enter the word"><br>
+       <br>
+        <input type="button" id="btn_tra" value="Traducir">
+        <br>
+        <br>
+        <input type="text" id="txt_res" disabled>
+        <br>
+        <br>
+    </form></center>
+</body>
+</html>
